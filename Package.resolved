@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "smile",
+      "identity" : "emojikit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onmyway133/Smile",
+      "location" : "https://github.com/niklasamslgruber/EmojiKit",
       "state" : {
-        "revision" : "40604722a7a56f735124e069fcbb58307637744b",
-        "version" : "2.1.0"
+        "revision" : "b57c28995b8e398d31be0c8b07de0917b0ebb84b",
+        "version" : "1.2.1"
       }
     }
   ],
