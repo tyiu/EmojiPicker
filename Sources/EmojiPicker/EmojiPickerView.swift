@@ -64,6 +64,8 @@ public struct EmojiPickerView: View {
         }
         .frame(maxHeight: .infinity)
         .searchable(text: $search)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled()
     }
 
 }
