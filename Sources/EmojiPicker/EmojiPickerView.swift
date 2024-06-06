@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import EmojiKit
 
 public struct EmojiPickerView: View {
 
@@ -39,7 +40,7 @@ public struct EmojiPickerView: View {
             return emojis
         } else {
             return emojis
-                .filter { $0.name.lowercased().contains(search.lowercased()) }
+//                .filter { $0.name.lowercased().contains(search.lowercased()) }
         }
     }
 
@@ -72,6 +73,6 @@ public struct EmojiPickerView: View {
 
 struct EmojiPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojiPickerView(selectedEmoji: .constant(Emoji(value: "", name: "")))
+        EmojiPickerView(selectedEmoji: .constant(Emoji(value: "", keywords: [])))
     }
 }

@@ -6,14 +6,14 @@
 //
 
 import Foundation
-import Smile
+import EmojiKit
 
 public final class DefaultEmojiProvider: EmojiProvider {
 
     public init() { }
 
     public func getAll() -> [Emoji] {
-        return emojiList.values.map { Emoji(value: $0, name: name(emoji: $0).first ?? "") }
+        return EmojiManager.getAvailableEmojis().flatMap { $0.emojis.values }
     }
 
 }
