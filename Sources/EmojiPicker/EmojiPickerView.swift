@@ -30,7 +30,7 @@ public struct EmojiPickerView: View {
     }
 
     let columns = [
-        GridItem(.adaptive(minimum: 80))
+        GridItem(.adaptive(minimum: 36))
     ]
 
     let emojis: [Emoji]
@@ -46,11 +46,11 @@ public struct EmojiPickerView: View {
 
     public var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
+            LazyVGrid(columns: columns) {
                 ForEach(searchResults, id: \.self) { emoji in
                     RoundedRectangle(cornerRadius: 16)
-                        .fill((selectedEmoji == emoji ? selectedColor : Color.gray).opacity(0.4))
-                        .frame(width: 64, height: 64)
+                        .fill((selectedEmoji == emoji ? selectedColor : Color.clear).opacity(0.4))
+                        .frame(width: 36, height: 36)
                         .overlay {
                             Text(emoji.value)
                                 .font(.largeTitle)
