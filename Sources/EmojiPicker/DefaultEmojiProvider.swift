@@ -12,7 +12,11 @@ public final class DefaultEmojiProvider: EmojiProvider {
 
     public init() { }
 
-    public func getAll() -> [Emoji] {
+    public func getAppleEmojiCategories() -> [EmojiKit.AppleEmojiCategory] {
+        return EmojiManager.getAvailableEmojis()
+    }
+
+    public func getAllEmojis() -> [EmojiKit.Emoji] {
         return EmojiManager.getAvailableEmojis().flatMap { $0.emojis.values }
     }
 

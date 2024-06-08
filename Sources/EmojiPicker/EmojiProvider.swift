@@ -9,5 +9,6 @@ import Foundation
 import EmojiKit
 
 public protocol EmojiProvider {
-    func getAll() -> [Emoji]
+    func getAppleEmojiCategories() -> [AppleEmojiCategory]
+    func getAllEmojis() -> [Emoji]
 }
