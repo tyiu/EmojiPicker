@@ -7,6 +7,7 @@
 
 import SwiftUI
 import EmojiPicker
+import EmojiKit
 
 struct ContentView: View {
 
@@ -16,15 +17,12 @@ struct ContentView: View {
     @State
     var displayEmojiPicker: Bool = false
 
-    @State
-    var displayLimitedEmojiPicker: Bool = false
-
     var body: some View {
         VStack {
             VStack {
                 Text(selectedEmoji?.value ?? "")
                     .font(.largeTitle)
-                Text(selectedEmoji?.name ?? "")
+                Text(selectedEmoji?.localizedKeywords["en"]?.joined(separator: ", ") ?? "")
                     .font(.title3)
             }
             .padding(8)
@@ -34,26 +32,11 @@ struct ContentView: View {
                 Text("Select standard emoji")
             }
             .buttonStyle(.borderedProminent)
-            Button {
-                displayLimitedEmojiPicker = true
-            } label: {
-                Text("Select limited emoji (custom provider)")
-            }
-            .buttonStyle(.borderedProminent)
-            .padding(.top, 8)
         }
         .padding()
         .sheet(isPresented: $displayEmojiPicker) {
             NavigationView {
                 EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
-                    .padding(.top, 32)
-                    .navigationTitle("Emojis")
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
-        .sheet(isPresented: $displayLimitedEmojiPicker) {
-            NavigationView {
-                EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange, emojiProvider: LimitedEmojiProvider())
                     .padding(.top, 32)
                     .navigationTitle("Emojis")
                     .navigationBarTitleDisplayMode(.inline)

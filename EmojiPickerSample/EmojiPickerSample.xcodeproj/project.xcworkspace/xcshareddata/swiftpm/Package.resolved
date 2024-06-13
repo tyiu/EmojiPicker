@@ -1,12 +1,30 @@
 {
   "pins" : [
     {
-      "identity" : "smile",
+      "identity" : "emojikit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/onmyway133/Smile",
+      "location" : "https://github.com/tyiu/EmojiKit",
       "state" : {
-        "revision" : "40604722a7a56f735124e069fcbb58307637744b",
-        "version" : "2.1.0"
+        "revision" : "719d405244ea9ef462867c16e3d3254b7386b71f",
+        "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "ee97538f5b81ae89698fd95938896dec5217b148",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-trie",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyiu/swift-trie",
+      "state" : {
+        "revision" : "0bb65eec3d570e8a0f6bd5c6a72f10641b97c71e",
+        "version" : "0.1.1"
       }
     }
   ],
