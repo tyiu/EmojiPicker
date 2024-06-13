@@ -19,14 +19,15 @@ It is a SwiftUI library that allows you to get a list of all the emojis present 
 ## Dependencies
 
 - SwiftUI (iOS >= 15.0)
-- [Smile](https://github.com/onmyway133/Smile) (2.1.0)
+- [EmojiKit](https://github.com/tyiu/EmojiKit) (`719d405244ea9ef462867c16e3d3254b7386b71f`)
+- [SwiftTrie](https://github.com/tyiu/swift-trie) (1.1.0)
 
 ## How install it?
 
 Nowaday we only support Swift Package Manager. You can use build-in UI tool for XCode with this search words: `EmojiPicker` or you can add it directly with this following command :
 
 ```swift
-.package(url: "https://github.com/Kelvas09/EmojiPicker.git", from: "1.0.0")
+.package(url: "https://github.com/tyiu/EmojiPicker.git", from: "2.0.0")
 ```
 
 ## How use it?
@@ -154,3 +155,7 @@ NavigationView {
 ## Samples
 
 You can access to sample project on folder `EmojiPickerSample`
+
+## Acknowledgements
+
+This Swift package was forked from [Kelvas09/EmojiPicker](https://github.com/Kelvas09/EmojiPicker).

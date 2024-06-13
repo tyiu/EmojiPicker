@@ -5,8 +5,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyiu/EmojiKit",
       "state" : {
-        "branch" : "emoji-keywords",
-        "revision" : "99744e7e8d004e1e7ebaa0e38af184ae1b6c8296"
+        "revision" : "719d405244ea9ef462867c16e3d3254b7386b71f"
       }
     },
     {
@@ -16,6 +15,15 @@
       "state" : {
         "revision" : "ee97538f5b81ae89698fd95938896dec5217b148",
         "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-trie",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tyiu/swift-trie",
+      "state" : {
+        "revision" : "0bb65eec3d570e8a0f6bd5c6a72f10641b97c71e",
+        "version" : "0.1.1"
       }
     }
   ],
