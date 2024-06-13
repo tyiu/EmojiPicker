@@ -24,15 +24,13 @@ public struct EmojiPickerView: View {
     private var search: String = ""
 
     private var selectedColor: Color
-    private var searchEnabled: Bool
 
     private let emojiCategories: [AppleEmojiCategory]
     private let emojiProvider: EmojiProvider
 
-    public init(selectedEmoji: Binding<Emoji?>, searchEnabled: Bool = false, selectedColor: Color = Color.accentColor, emojiProvider: EmojiProvider = DefaultEmojiProvider()) {
+    public init(selectedEmoji: Binding<Emoji?>, selectedColor: Color = Color.accentColor, emojiProvider: EmojiProvider = DefaultEmojiProvider()) {
         self._selectedEmoji = selectedEmoji
         self.selectedColor = selectedColor
-        self.searchEnabled = searchEnabled
         self.emojiProvider = emojiProvider
         self.emojiCategories = emojiProvider.emojiCategories
     }
@@ -54,7 +52,7 @@ public struct EmojiPickerView: View {
             VStack {
                 ScrollView {
                     LazyVGrid(columns: columns, alignment: .leading) {
-                        if !searchEnabled || search.isEmpty {
+                        if search.isEmpty {
                             ForEach(emojiCategories, id: \.self) { category in
                                 Section {
                                     ForEach(category.emojis.values, id: \.self) { emoji in
@@ -152,6 +150,6 @@ extension AppleEmojiCategory.Name {
 
 struct EmojiPickerView_Previews: PreviewProvider {
     static var previews: some View {
-        EmojiPickerView(selectedEmoji: .constant(Emoji(value: "", localizedKeywords: [:])), searchEnabled: true)
+        EmojiPickerView(selectedEmoji: .constant(Emoji(value: "", localizedKeywords: [:])))
     }
 }

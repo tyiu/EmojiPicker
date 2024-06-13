@@ -1,62 +1,73 @@
-![EmojiPicker](./.assets/EmojiPickerFront.png)
+# EmojiPicker
 
-## Goal
+This Swift package allows you to show a view with all available emoji on the OS, navigate through the list of emojis and categories, search for emojis based on keywords, and select an emoji.
 
-In some cases you need to be able to select an emoji and not allow a user to enter anything else (letters, numbers, symbols, ...). 
-
-The EmojiPicker is there for that.
-
-It is a SwiftUI library that allows you to get a list of all the emojis present on your smartphone but also to create a selector to simplify your life.
-
-## Screenshots and video
+## Screenshots
 
 |Emoji list|Emoji search|
 |---|---|
 |![Emoji list](./.assets/EmojiPicker-1.png)|![Emoji search](./.assets/EmojiPicker-2.png)|
 
-![Emoji list](./.assets/EmojiPicker-Vid.gif)
-
 ## Dependencies
 
 - SwiftUI (iOS >= 15.0)
-- [EmojiKit](https://github.com/tyiu/EmojiKit) (`719d405244ea9ef462867c16e3d3254b7386b71f`)
-- [SwiftTrie](https://github.com/tyiu/swift-trie) (1.1.0)
+- [EmojiKit](https://github.com/tyiu/EmojiKit) (0.1.0)
+- [SwiftTrie](https://github.com/tyiu/swift-trie) (0.1.1)
 
-## How install it?
+## Installation
 
-Nowaday we only support Swift Package Manager. You can use build-in UI tool for XCode with this search words: `EmojiPicker` or you can add it directly with this following command :
+EmojiPicker can be integrated as an Xcode project target or a Swift package target.
+
+### Xcode Project Target
+
+1. Go to `File` -> `Add Package Dependencies`.
+2. Type https://github.com/tyiu/EmojiPicker.git into the search field.
+3. Select `EmojiPicker` from the search results.
+4. Select `Up to Next Major Version` starting from the latest release as the dependency rule.
+5. Ensure your project is selected next to `Add to Project`.
+6. Click `Add Package`.
+7. On the package product dialog, add `EmojiPicker` to your target and click `Add Package`.
+
+### Swift Package Target
+
+In your `Package.swift` file:
+1. Add the EmojiPicker package dependency to https://github.com/tyiu/EmojiPicker.git
+2. Add `EmojiPicker` as a dependency on the targets that need to use the SDK.
 
 ```swift
-.package(url: "https://github.com/tyiu/EmojiPicker.git", from: "2.0.0")
+let package = Package(
+    // ...
+    dependencies: [
+        // ...
+        .package(url: "https://github.com/tyiu/EmojiPicker.git", .upToNextMajor(from: "0.1.0"))
+    ],
+    targets: [
+        .target(
+            // ...
+            dependencies: ["EmojiPicker"]
+        ),
+        .testTarget(
+            // ...
+            dependencies: ["EmojiPicker"]
+        )
+    ]
+)
 ```
 
-## How use it?
+## Usage
 
-First of all you have to import the library `EmojiPicker`:
+Import `EmojiPicker` in the file you want to use it in:
 
 ```swift
 import EmojiPicker
 ```
 
-You then have the option of using the `EmojiPickerView`. This view represents the list of selectable emojis.
-
-The latter is not embedded in a NavigationView. If you want to display it with a title, you have to do it yourself:
-
-```swift
-...
-NavigationView {
-    EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
-        .navigationTitle("Emojis")
-        .navigationBarTitleDisplayMode(.inline)
-}
-...
-```
-
-Here is a complete example:
+Then add `EmojiPickerView` as a view. Here is a complete example:
 
 ```swift
 import SwiftUI
 import EmojiPicker
+import EmojiKit
 
 struct ContentView: View {
 
@@ -71,20 +82,22 @@ struct ContentView: View {
             VStack {
                 Text(selectedEmoji?.value ?? "")
                     .font(.largeTitle)
-                Text(selectedEmoji?.name ?? "")
+                Text(selectedEmoji?.localizedKeywords["en"]?.joined(separator: ", ") ?? "")
                     .font(.title3)
             }
             .padding(8)
             Button {
                 displayEmojiPicker = true
             } label: {
-                Text("Select emoji")
+                Text("Select standard emoji")
             }
+            .buttonStyle(.borderedProminent)
         }
         .padding()
         .sheet(isPresented: $displayEmojiPicker) {
             NavigationView {
                 EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
+                    .padding(.top, 32)
                     .navigationTitle("Emojis")
                     .navigationBarTitleDisplayMode(.inline)
             }
@@ -100,56 +113,6 @@ When a user selects an emoji, it is highlighted. By default the selection color 
 
 ```swift
 EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
-```
-
-### Enable search
-
-By default the search for emoji is allowed in the picker, it is however possible to change this setting when creating the view:
-
-```swift
-EmojiPickerView(selectedEmoji: $selectedEmoji, searchEnabled: false)
-```
-
-⚠️ **WARNING** Search is only possible when `EmojiPicker` is embed on `NavigationView`.
-
-### Custom emoji provider
-
-`EmojiPickerView` embeds `EmojiProvider` protocol with a default implementation: `DefaultEmojiProvider`. This class allows to retrieve all existing emojis. 
-
-When you build an `EmojiPickerView`, by default it uses this class to get the list of emojis to display.
-
-If you want to use your own emoji list, you can create your own class by implementing the `EmojiProvider` protocol :
-
-```swift
-import Foundation
-import EmojiPicker
-
-final class LimitedEmojiProvider: EmojiProvider {
-
-    func getAll() -> [Emoji] {
-        return [
-            Emoji(value: "🚀", name: "rocket"),
-            Emoji(value: "🇫🇷", name: "France"),
-            Emoji(value: "🦄", name: "unicorn"),
-            Emoji(value: "🍺", name: "beer"),
-            Emoji(value: "💶", name: "euro")
-        ]
-    }
-
-}
-```
-
-And then use it in the creation of the view:
-
-```swift
-...
-NavigationView {
-    EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange, emojiProvider: LimitedEmojiProvider())
-        .padding(.top, 32)
-        .navigationTitle("Emojis")
-        .navigationBarTitleDisplayMode(.inline)
-}
-...
 ```
 
 ## Samples
