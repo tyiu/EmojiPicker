@@ -16,7 +16,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
 //        .package(url: "https://github.com/tyiu/EmojiKit", branch: "emoji-keywords")
-        .package(url: "https://github.com/tyiu/EmojiKit", revision: "719d405244ea9ef462867c16e3d3254b7386b71f"),
+        .package(url: "https://github.com/tyiu/EmojiKit", .upToNextMajor(from: "0.1.0")),
         .package(url: "https://github.com/tyiu/swift-trie", .upToNextMajor(from: "0.1.1"))
     ],
     targets: [
