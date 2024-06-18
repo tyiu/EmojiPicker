@@ -12,30 +12,48 @@ import SwiftTrie
 public struct EmojiPickerView: View {
 
     @Environment(\.dismiss)
-    var dismiss
+    private var dismiss
 
     @Binding
-    public var selectedEmoji: Emoji?
+    private var selectedEmoji: Emoji?
 
     @State
-    var selectedCategoryName: EmojiCategory.Name = .smileysAndPeople
+    private var skinTone1: SkinTone
+
+    @State
+    private var skinTone2: SkinTone
 
     @State
     private var search: String = ""
 
-    private var selectedColor: Color
+    @State
+    private var isShowingSettings: Bool = false
 
-    private let emojiCategories: [AppleEmojiCategory]
-    private let emojiProvider: EmojiProvider
+    @State
+    private var emojiProvider: EmojiProvider
 
-    public init(selectedEmoji: Binding<Emoji?>, selectedColor: Color = Color.accentColor, emojiProvider: EmojiProvider = DefaultEmojiProvider()) {
+    private let demoSkinToneEmojis: [String] = [
+        "👍",
+        "🧍",
+        "🧑",
+        "🤝",
+        "🧑‍🤝‍🧑",
+        "💏",
+        "💑"
+    ]
+
+    public init(
+        selectedEmoji: Binding<Emoji?>,
+        emojiProvider: EmojiProvider = DefaultEmojiProvider(showAllVariations: true)
+    ) {
         self._selectedEmoji = selectedEmoji
-        self.selectedColor = selectedColor
         self.emojiProvider = emojiProvider
-        self.emojiCategories = emojiProvider.emojiCategories
+
+        skinTone1 = emojiProvider.skinTone1
+        skinTone2 = emojiProvider.skinTone2
     }
 
-    let columns = [
+    private let columns = [
         GridItem(.adaptive(minimum: 36))
     ]
 
@@ -47,80 +65,209 @@ public struct EmojiPickerView: View {
         }
     }
 
+    private func emojiVariation(_ emoji: Emoji) -> Emoji {
+        let unqualifiedNeutralEmoji = EmojiManager.unqualifiedNeutralEmoji(for: emoji.value)
+        if (skinTone1 == .neutral && skinTone2 == .neutral)
+            || emojiProvider.variations[unqualifiedNeutralEmoji] == nil {
+            // Show neutral emoji if both skin tones are neutral.
+            return emoji
+        } else if let variation = emojiProvider.variation(
+            for: emoji.value,
+            skinTone1: skinTone1,
+            skinTone2: skinTone2
+        ) {
+            // Show skin tone combination if the variation exists.
+            return variation
+        } else if skinTone2 == .neutral, let variation = emojiProvider.variation(
+            for: emoji.value,
+            skinTone1: skinTone1,
+            skinTone2: skinTone1
+        ) {
+            // If only the second skin tone is neutral,
+            // look up only variations where the second skin tone is the same as the first.
+            return variation
+        } else {
+            // If none of the above are found, show the neutral emoji.
+            return emoji
+        }
+    }
+
+    private func emojiView(emoji: Emoji, category: AppleEmojiCategory?) -> some View {
+        RoundedRectangle(cornerRadius: 16)
+            .fill(.clear)
+            .frame(width: 36, height: 36)
+            .overlay {
+                Text(emojiVariation(emoji).value)
+                    .font(.largeTitle)
+            }
+    }
+
+    private func emojiViewInteractive(emoji: Emoji, category: AppleEmojiCategory?) -> some View {
+        emojiView(emoji: emoji, category: category)
+            .onTapGesture {
+                emoji.incrementUsageCount()
+                selectedEmoji = emojiVariation(emoji)
+                dismiss()
+            }
+    }
+
+    private func sectionHeaderView(_ categoryName: EmojiCategory.Name) -> some View {
+        ZStack {
+#if os(iOS)
+            Color(.systemBackground)
+                .frame(maxWidth: .infinity) // Ensure background spans full width
+#else
+            Color(.windowBackgroundColor)
+                .frame(maxWidth: .infinity) // Ensure background spans full width
+#endif
+            Text(categoryName.localizedName)
+                .foregroundStyle(.gray)
+                .frame(maxWidth: .infinity, alignment: .leading) // Ensure text is aligned
+        }
+        .zIndex(1) // Ensure header is on top
+    }
+
     public var body: some View {
         ScrollViewReader { proxy in
             VStack {
-                ScrollView {
-                    LazyVGrid(columns: columns, alignment: .leading) {
-                        if search.isEmpty {
-                            ForEach(emojiCategories, id: \.self) { category in
+                if isShowingSettings {
+                    VStack {
+                        settingsView
+                    }
+                    .frame(maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: columns, alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                            if search.isEmpty {
                                 Section {
-                                    ForEach(category.emojis.values, id: \.self) { emoji in
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .fill((selectedEmoji == emoji ? selectedColor : Color.clear).opacity(0.4))
-                                            .frame(width: 36, height: 36)
-                                            .overlay {
-                                                Text(emoji.value)
-                                                    .font(.largeTitle)
-                                            }
-                                            .onTapGesture {
-                                                selectedEmoji = emoji
-                                                dismiss()
-                                            }
-                                            .onAppear {
-                                                self.selectedCategoryName = category.name
-                                            }
+                                    ForEach(emojiProvider.frequentlyUsedEmojis.map { $0.sectionedEmoji(EmojiCategory.Name.frequentlyUsed) }, id: \.self) { sectionedEmoji in
+                                        emojiViewInteractive(emoji: sectionedEmoji.emoji, category: nil)
                                     }
                                 } header: {
-                                    Text(category.name.localizedName)
-                                        .foregroundStyle(.gray)
-                                        .padding(.vertical, 8)
+                                    sectionHeaderView(EmojiCategory.Name.frequentlyUsed)
                                 }
+                                .id(EmojiCategory.Name.frequentlyUsed)
                                 .frame(alignment: .leading)
-                                .id(category.name)
-                                .onAppear {
-                                    self.selectedCategoryName = category.name
-                                }
-                            }
-                        } else {
-                            ForEach(searchResults, id: \.self) { emoji in
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill((selectedEmoji == emoji ? selectedColor : Color.clear).opacity(0.4))
-                                    .frame(width: 36, height: 36)
-                                    .overlay {
-                                        Text(emoji.value)
-                                            .font(.largeTitle)
-                                    }
-                                    .onTapGesture {
-                                        selectedEmoji = emoji
-                                        dismiss()
-                                    }
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
-                .frame(maxHeight: .infinity)
-                .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always))
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
 
-                if search.isEmpty {
-                    HStack(spacing: 8) {
-                        ForEach(EmojiCategory.Name.orderedCases, id: \.self) { emojiCategoryName in
-                            Image(systemName: emojiCategoryName.imageName)
-                                .font(.system(size: 18))
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(selectedCategoryName == emojiCategoryName ? Color.accentColor : .secondary)
-                                .onTapGesture {
-                                    selectedCategoryName = emojiCategoryName
-                                    proxy.scrollTo(emojiCategoryName, anchor: .top)
+                                ForEach(emojiProvider.emojiCategories, id: \.self) { category in
+                                    Section {
+                                        ForEach(category.emojis.values, id: \.self) { emoji in
+                                            emojiViewInteractive(emoji: emoji, category: category)
+                                        }
+                                    } header: {
+                                        sectionHeaderView(category.name)
+                                    }
+                                    .id(category.name)
+                                    .frame(alignment: .leading)
                                 }
+                            } else {
+                                ForEach(searchResults, id: \.self) { emoji in
+                                    emojiViewInteractive(emoji: emoji, category: nil)
+                                }
+                            }
                         }
+                        .padding(.horizontal)
                     }
+                    .frame(maxHeight: .infinity)
+                    .autocorrectionDisabled()
+#if os(iOS)
+                    .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always))
+                    .textInputAutocapitalization(.never)
+#else
+                    .searchable(text: $search, placement: .automatic)
+#endif
+                }
+
+                HStack(spacing: 8) {
+                    ForEach(EmojiCategory.Name.orderedCases, id: \.self) { emojiCategoryName in
+                        Image(systemName: emojiCategoryName.imageName)
+                            .font(.system(size: 20))
+                            .frame(width: 24, height: 24)
+                            .onTapGesture {
+                                search = ""
+                                isShowingSettings = false
+                                proxy.scrollTo(emojiCategoryName, anchor: .topLeading)
+                            }
+                    }
+                    settingsTab
                 }
             }
         }
+    }
+
+    private var settingsView: some View {
+        Form {
+            Section {
+                HStack {
+                    ForEach(demoSkinToneEmojis, id: \.self) {
+                        emojiView(emoji: Emoji(value: $0, localizedKeywords: [:]), category: nil)
+                            .frame(alignment: .center)
+                    }
+                }
+
+                Picker(
+                    NSLocalizedString("firstSkinTone",
+                                           tableName: "EmojiPickerLocalizable",
+                                           bundle: .module,
+                                           comment: ""),
+                    selection: $skinTone1
+                ) {
+                    ForEach(SkinTone.allCases, id: \.self) { skinTone in
+                        Text(skinTone.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: skinTone1) { newSkinTone in
+                    emojiProvider.skinTone1 = newSkinTone
+                }
+
+                Picker(
+                    NSLocalizedString("secondSkinTone",
+                                           tableName: "EmojiPickerLocalizable",
+                                           bundle: .module,
+                                           comment: ""),
+                    selection: $skinTone2
+                ) {
+                    ForEach(SkinTone.allCases, id: \.self) { skinTone in
+                        Text(skinTone.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: skinTone2) { newSkinTone in
+                    emojiProvider.skinTone2 = newSkinTone
+                }
+            } header: {
+                Text(NSLocalizedString("skinToneHeader",
+                                       tableName: "EmojiPickerLocalizable",
+                                       bundle: .module,
+                                       comment: ""))
+            }
+
+            Section {
+                Button {
+                    emojiProvider.removeFrequentlyUsedEmojis()
+                } label: {
+                    Text(NSLocalizedString("reset",
+                                           tableName: "EmojiPickerLocalizable",
+                                           bundle: .module,
+                                           comment: ""))
+                }
+            } header: {
+                Text(EmojiCategory.Name.frequentlyUsed.localizedName)
+            }
+        }
+    }
+
+    private var settingsTab: some View {
+        Image(systemName: "gear")
+            .font(.system(size: 20))
+            .frame(width: 24, height: 24)
+            .foregroundColor(isShowingSettings
+                             ? Color.accentColor : .secondary)
+            .onTapGesture {
+                search = ""
+                isShowingSettings = true
+            }
     }
 
 }
@@ -128,6 +275,8 @@ public struct EmojiPickerView: View {
 extension AppleEmojiCategory.Name {
     var imageName: String {
         switch self {
+        case .frequentlyUsed:
+            return "clock"
         case .smileysAndPeople:
             return "face.smiling"
         case .animalsAndNature:
@@ -146,6 +295,17 @@ extension AppleEmojiCategory.Name {
             return "flag"
         }
     }
+}
+
+extension Emoji {
+    func sectionedEmoji(_ categoryName: EmojiCategory.Name) -> SectionedEmoji {
+        SectionedEmoji(emoji: self, categoryName: categoryName)
+    }
+}
+
+struct SectionedEmoji: Hashable {
+    let emoji: Emoji
+    let categoryName: EmojiCategory.Name
 }
 
 struct EmojiPickerView_Previews: PreviewProvider {

@@ -36,7 +36,7 @@ struct ContentView: View {
         .padding()
         .sheet(isPresented: $displayEmojiPicker) {
             NavigationView {
-                EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
+                EmojiPickerView(selectedEmoji: $selectedEmoji)
                     .padding(.top, 32)
                     .navigationTitle("Emojis")
                     .navigationBarTitleDisplayMode(.inline)

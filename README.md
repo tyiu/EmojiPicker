@@ -4,15 +4,15 @@ This Swift package allows you to show a view with all available emoji on the OS,
 
 ## Screenshots
 
-|Emoji list|Emoji search|
-|---|---|
-|![Emoji list](./.assets/EmojiPicker-1.png)|![Emoji search](./.assets/EmojiPicker-2.png)|
+|Emoji list|Emoji search|Emoji settings|
+|---|---|---|
+|![Emoji list](./.assets/EmojiPicker-1.png)|![Emoji search](./.assets/EmojiPicker-2.png)|![Emoji settings](./.assets/EmojiPicker-3.png)|
 
 ## Dependencies
 
 - SwiftUI (iOS >= 15.0)
-- [EmojiKit](https://github.com/tyiu/EmojiKit) (0.1.0)
-- [SwiftTrie](https://github.com/tyiu/swift-trie) (0.1.1)
+- [EmojiKit](https://github.com/tyiu/EmojiKit) (0.1.2)
+- [SwiftTrie](https://github.com/tyiu/swift-trie) (0.1.2)
 
 ## Installation
 
@@ -39,7 +39,7 @@ let package = Package(
     // ...
     dependencies: [
         // ...
-        .package(url: "https://github.com/tyiu/EmojiPicker.git", .upToNextMajor(from: "0.1.0"))
+        .package(url: "https://github.com/tyiu/EmojiPicker.git", .upToNextMajor(from: "0.1.1"))
     ],
     targets: [
         .target(
@@ -96,7 +96,7 @@ struct ContentView: View {
         .padding()
         .sheet(isPresented: $displayEmojiPicker) {
             NavigationView {
-                EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
+                EmojiPickerView(selectedEmoji: $selectedEmoji)
                     .padding(.top, 32)
                     .navigationTitle("Emojis")
                     .navigationBarTitleDisplayMode(.inline)
@@ -105,14 +105,6 @@ struct ContentView: View {
     }
 
 }
-```
-
-### Select color
-
-When a user selects an emoji, it is highlighted. By default the selection color is `blue` but you can change this value when creating the view: 
-
-```swift
-EmojiPickerView(selectedEmoji: $selectedEmoji, selectedColor: .orange)
 ```
 
 ## Samples
