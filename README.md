@@ -4,9 +4,15 @@ This Swift package allows you to show a view with all available emoji on the OS,
 
 ## Screenshots
 
-|Emoji list|Emoji search|Emoji settings|
-|---|---|---|
-|![Emoji list](./.assets/EmojiPicker-1.png)|![Emoji search](./.assets/EmojiPicker-2.png)|![Emoji settings](./.assets/EmojiPicker-3.png)|
+| Emoji list                                       | Emoji search                                             | Emoji settings                                           |
+|--------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
+| ![Emoji list](./.assets/EmojiPicker-1.png)       | ![Emoji search](./.assets/EmojiPicker-2.png)             | ![Emoji settings](./.assets/EmojiPicker-3.png)           |
+
+## Macos Screenshots
+| Emoji list                                       | Emoji search                                             | 
+|--------------------------------------------------|----------------------------------------------------------|
+| ![Emoji preview](./.assets/emoji-picker-mac.png) | ![Emoji mac popover](./.assets/popover-emoji-picker.png) |
+
 
 ## Dependencies
 
