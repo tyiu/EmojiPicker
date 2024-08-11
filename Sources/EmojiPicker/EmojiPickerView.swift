@@ -44,7 +44,7 @@ public struct EmojiPickerView: View {
 
     public init(
             selectedEmoji: Binding<Emoji?>,
-            emojiProvider: EmojiProvider
+            emojiProvider: EmojiProvider = DefaultEmojiProvider(showAllVariations: true)
     ) {
         self._selectedEmoji = selectedEmoji
         self._emojiProvider = State(initialValue: emojiProvider) // Initialize emojiProvider first
