@@ -177,7 +177,11 @@ public struct EmojiPickerView: View {
                         }
                                 .padding(.horizontal)
                     }
+                            #if os(iOS)
                             .frame(maxHeight: .infinity)
+                            #else
+                            .frame(maxHeight: 300)
+                            #endif
                             .autocorrectionDisabled()
                             #if os(iOS)
                             .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always))
@@ -196,6 +200,11 @@ public struct EmojiPickerView: View {
                                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
                         }
             }
+                    #if os(macOS)
+                    .background(Color(.windowBackgroundColor))
+                    .cornerRadius(8)
+                    .edgesIgnoringSafeArea(.bottom)
+                    #endif
         }
     }
 
