@@ -30,7 +30,7 @@ public struct EmojiPickerView: View {
     private var isShowingSettings: Bool = false
 
     @State
-    private var emojiProvider: EmojiProvider = DefaultEmojiProvider(showAllVariations: true)
+    private var emojiProvider: EmojiProvider
 
     private let demoSkinToneEmojis: [String] = [
         "👍",
