@@ -11,7 +11,7 @@ This Swift package allows you to show a view with all available emoji on the OS,
 ## Dependencies
 
 - SwiftUI (iOS >= 15.0)
-- [EmojiKit](https://github.com/tyiu/EmojiKit) (0.1.2)
+- [EmojiKit](https://github.com/tyiu/EmojiKit) (0.2.0)
 - [SwiftTrie](https://github.com/tyiu/swift-trie) (0.1.2)
 
 ## Installation
@@ -39,7 +39,7 @@ let package = Package(
     // ...
     dependencies: [
         // ...
-        .package(url: "https://github.com/tyiu/EmojiPicker.git", .upToNextMajor(from: "0.1.1"))
+        .package(url: "https://github.com/tyiu/EmojiPicker.git", .upToNextMajor(from: "0.2.0"))
     ],
     targets: [
         .target(

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/tyiu/EmojiKit",
       "state" : {
-        "revision" : "05805f72d63a6d6a2d7dc7fe14abd37c1317b11a",
-        "version" : "0.1.2"
+        "revision" : "47a4b1402de26be0299dcb4d667c1faaf21a7874",
+        "version" : "0.2.0"
       }
     },
     {
